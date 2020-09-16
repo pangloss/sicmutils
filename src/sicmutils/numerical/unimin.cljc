@@ -29,12 +29,71 @@
   "
   [f a b n ftol])
 
+#_
+(define (local-maxima f a b n ftol)
+  (let* ((h (/ (- b a) (+ n 1)))
+         (xlist (generate-list
+                 (+ n 2)
+                 (lambda (i) (if (= i (+ n 1)) b (+ a (* i h))))))
+         (flist (map f xlist))
+         (xi (lambda(i) (list-ref xlist i)))
+         (fi (lambda(i) (list-ref flist i)))
+         (brack1 (if (> (fi 0) (fi 1))
+                   (list (list (xi 0) (xi 1)))
+                   '()))
+         (brack2 (if (> (fi (+ n 1)) (fi n))
+                   (cons (list (xi n) (xi (+ n 1))) brack1)
+                   brack1))
+         (bracketlist
+          (let loop ((i 1) (b brack2))
+               (if (> i n)
+                 b
+                 (if (and (<= (fi (- i 1)) (fi i))
+                          (>= (fi i) (fi (+ i 1))))
+                   (loop (+ i 1) (cons (list (xi (- i 1))
+                                             (xi (+ i 1))) b))
+                   (loop (+ i 1) b)))))
+         (locmax (lambda (int) (gsmax f (car int) (cadr int)
+                                      'function-tol ftol))))
+    (map locmax bracketlist)))
+
 (defn local-minima [f a b n ftol])
+
+#_
+(define (local-minima f a b n ftol)
+  (let* ((g (lambda (x) (- (f x))))
+         (result (local-maxima g a b n ftol))
+         (flip (lambda (r) (list (car r) (- (cadr r)) (caddr r)))))
+    (map flip result)))
 
 (defn estimate-global-max
   "Refer to the previous two functions and find the max of all of those."
   [f a b n ftol])
 
+#_
+(define (estimate-global-max f a b n ftol)
+  (let ((local-maxs (local-maxima f a b n ftol)))
+    (let loop ((best-so-far (car local-maxs))
+               (unexamined (cdr local-maxs)))
+         (if (null? unexamined)
+           best-so-far
+           (let ((next (car unexamined)))
+             (if (> (cadr next) (cadr best-so-far))
+               (loop next (cdr unexamined))
+               (loop best-so-far (cdr unexamined))))))))
+
 (defn estimate-global-min
   "Refer to the previous two functions and find the min."
   [f a b n ftol])
+
+#_
+(define (estimate-global-min f a b n ftol)
+  (let ((local-mins (local-minima f a b n ftol)))
+    (let loop ((best-so-far (car local-mins))
+               (unexamined (cdr local-mins)))
+         (if (null? unexamined)
+           best-so-far
+           (let ((next (car unexamined)))
+             (if (< (cadr next) (cadr best-so-far))
+               (loop next (cdr unexamined))
+               (loop best-so-far (cdr unexamined))))))))
