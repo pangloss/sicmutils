@@ -64,6 +64,9 @@
        (.getMethod multimethod
                    (apply (.dispatchFn multimethod) args))))
 
+(defn method-dispatch [multimethod & args]
+  (apply (.dispatchFn multimethod) args))
+
 (defmacro ^:private defgeneric
   "Defines a multifn using the provided symbol. Arranges for the multifn
   to answer the :arity message, reporting either [:exactly a] or
@@ -114,6 +117,7 @@
 (def generic-call-id (atom 0))
 (def ^:dynamic *generic-call-chain* [])
 (def ^:dynamic *generic-call-tap?* (constantly false))
+(def ^:dynamic *on-generic-call* (constantly nil))
 
 (defmacro defmethod [multifn dispatch-val & fn-tail]
   (if *debug-generics*
@@ -125,15 +129,18 @@
                 call-info# (assoc call-info# :id call-id# :parent-id (:id (last *generic-call-chain*)))
                 tap?# (*generic-call-tap?* call-info#)]
             (when tap?#
-              (tap> (assoc (try (assoc call-info# :call ~(second fn-tail))
-                                ;; If the function destructures I'm not going to try to figure that out.
-                                (catch Exception e# call-info#))
-                           :chain *generic-call-chain*)))
+              (*on-generic-call*
+               (assoc (try (assoc call-info#
+                                  :args ~(first fn-tail)
+                                  :dispatch-with (method-dispatch ~multifn ~@(first fn-tail)))
+                           ;; If the function destructures I'm not going to try to figure that out.
+                           (catch Exception e# call-info#))
+                      :chain *generic-call-chain*)))
             (let [result#
                   (binding [*generic-call-chain* (conj *generic-call-chain* call-info#)]
                     ~(last fn-tail))]
               (when tap?#
-                (tap> (assoc call-info# :result result#)))
+                (*on-generic-call* (assoc call-info# :result result#)))
               result#))))
     `(core-defmethod ~multifn ~dispatch-val ~@fn-tail)))
 
