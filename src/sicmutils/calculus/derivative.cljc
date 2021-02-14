@@ -429,10 +429,10 @@
 ;; installation.
 
 (doseq [t [::v/function ::s/structure]]
-  (defmethod g/partial-derivative [t v/seqtype] [f selectors]
+  (g/defmethod g/partial-derivative [t v/seqtype] [f selectors]
     (multivariate f selectors))
 
-  (defmethod g/partial-derivative [t nil] [f _]
+  (g/defmethod g/partial-derivative [t nil] [f _]
     (multivariate f [])))
 
 ;; ## Operators

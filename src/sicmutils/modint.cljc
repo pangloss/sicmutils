@@ -126,33 +126,33 @@
 (def ^:private remainder (modular-binop g/remainder))
 (def ^:private modulo (modular-binop g/modulo))
 
-(defmethod g/add [::modint ::modint] [a b] (add a b))
-(defmethod g/mul [::modint ::modint] [a b] (mul a b))
-(defmethod g/sub [::modint ::modint] [a b] (sub a b))
-(defmethod g/negate [::modint] [a] (make (g/negate (:i a)) (:m a)))
-(defmethod g/invert [::modint] [a] (invert a))
-(defmethod g/magnitude [::modint] [{:keys [i m] :as a}] (g/modulo i m))
-(defmethod g/abs [::modint] [{:keys [i m] :as a}]
+(g/defmethod g/add [::modint ::modint] [a b] (add a b))
+(g/defmethod g/mul [::modint ::modint] [a b] (mul a b))
+(g/defmethod g/sub [::modint ::modint] [a b] (sub a b))
+(g/defmethod g/negate [::modint] [a] (make (g/negate (:i a)) (:m a)))
+(g/defmethod g/invert [::modint] [a] (invert a))
+(g/defmethod g/magnitude [::modint] [{:keys [i m] :as a}] (g/modulo i m))
+(g/defmethod g/abs [::modint] [{:keys [i m] :as a}]
   (if (g/negative? i)
     (make i m)
     a))
-(defmethod g/quotient [::modint ::modint] [a b] (mul a (invert b)))
-(defmethod g/remainder [::modint ::modint] [a b] (remainder a b))
-(defmethod g/modulo [::modint ::modint] [a b] (modulo a b))
-(defmethod g/exact-divide [::modint ::modint] [a b] (mul a (invert b)))
-(defmethod g/negative? [::modint] [a] (g/negative? (:i a)))
+(g/defmethod g/quotient [::modint ::modint] [a b] (mul a (invert b)))
+(g/defmethod g/remainder [::modint ::modint] [a b] (remainder a b))
+(g/defmethod g/modulo [::modint ::modint] [a b] (modulo a b))
+(g/defmethod g/exact-divide [::modint ::modint] [a b] (mul a (invert b)))
+(g/defmethod g/negative? [::modint] [a] (g/negative? (:i a)))
 
 ;; Methods that allow interaction with other integral types. The first block is
 ;; perhaps slightly more efficient:
 (doseq [op [g/add g/mul g/sub]]
-  (defmethod op [::v/integral ::modint] [a b] (make (op a (:i b)) (:m b)))
-  (defmethod op [::modint ::v/integral] [a b] (make (op (:i a) b) (:m a))))
+  (g/defmethod op [::v/integral ::modint] [a b] (make (op a (:i b)) (:m b)))
+  (g/defmethod op [::modint ::v/integral] [a b] (make (op (:i a) b) (:m a))))
 
 ;; A more efficient exponent implementation is available on the JVM.
-(defmethod g/expt [::v/integral ::modint] [a b](mod-expt a (:i b) (:m b)))
-(defmethod g/expt [::modint ::v/integral] [a b] (mod-expt (:i a) b (:m a)))
+(g/defmethod g/expt [::v/integral ::modint] [a b](mod-expt a (:i b) (:m b)))
+(g/defmethod g/expt [::modint ::v/integral] [a b] (mod-expt (:i a) b (:m a)))
 
 ;; The second block promotes any integral type to a ModInt before operating.
 (doseq [op [g/quotient g/remainder g/exact-divide]]
-  (defmethod op [::v/integral ::modint] [a b] (op (make a (:m b)) b))
-  (defmethod op [::modint ::v/integral] [a b] (op a (make b (:m a)))))
+  (g/defmethod op [::v/integral ::modint] [a b] (op (make a (:m b)) b))
+  (g/defmethod op [::modint ::v/integral] [a b] (op a (make b (:m a)))))

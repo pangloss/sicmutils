@@ -490,7 +490,7 @@
   to introduce this operation to function arguments."
   [generic-op]
   (let [unary-op (unary-operation generic-op)]
-    (defmethod generic-op [::v/function] [a]
+    (g/defmethod generic-op [::v/function] [a]
       (unary-op a))))
 
 (defn- defbinary
@@ -503,7 +503,7 @@
      (doseq [signature [[::v/function ::v/function]
                         [::v/function ::cofunction]
                         [::cofunction ::v/function]]]
-       (defmethod generic-op signature [a b]
+       (g/defmethod generic-op signature [a b]
          (binop a b))))))
 
 (defbinary g/add g/+)
@@ -560,7 +560,7 @@
   ie:
 
   (T^t(g))(a) = g(T(a))")
-(defmethod g/transpose [::v/function] [f]
+(g/defmethod g/transpose [::v/function] [f]
   (fn [g]
     (fn [a]
       (g (f a)))))

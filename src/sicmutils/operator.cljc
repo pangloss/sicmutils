@@ -397,34 +397,34 @@
                     [g/asinh series/asinh-series 'asinh]
                     [g/atanh series/atanh-series 'atanh]]]
   (let [assert-str (str "g/" sym " :sicmutils.operator/operator")]
-    (defmethod op [::operator] [g]
+    (g/defmethod op [::operator] [g]
       (assert (= (arity g) [:exactly 1]) assert-str)
       (->Operator (f g)
                   [:exactly 1]
                   `(~sym ~(name g))
                   (context g)))))
 
-(defmethod g/add [::operator ::operator] [o p] (o:+ o p))
-(defmethod g/add [::operator ::co-operator] [o f] (o+f o f))
-(defmethod g/add [::co-operator ::operator] [f o] (f+o f o))
+(g/defmethod g/add [::operator ::operator] [o p] (o:+ o p))
+(g/defmethod g/add [::operator ::co-operator] [o f] (o+f o f))
+(g/defmethod g/add [::co-operator ::operator] [f o] (f+o f o))
 
-(defmethod g/negate [::operator] [o] (negate o))
+(g/defmethod g/negate [::operator] [o] (negate o))
 
-(defmethod g/sub [::operator ::operator] [o p] (o:- o p))
-(defmethod g/sub [::operator ::co-operator] [o f] (o-f o f))
-(defmethod g/sub [::co-operator ::operator] [f o] (f-o f o))
+(g/defmethod g/sub [::operator ::operator] [o p] (o:- o p))
+(g/defmethod g/sub [::operator ::co-operator] [o f] (o-f o f))
+(g/defmethod g/sub [::co-operator ::operator] [f o] (f-o f o))
 
-(defmethod g/mul [::operator ::operator] [o p] (o:* o p))
-(defmethod g/mul [::operator ::co-operator] [o f] (o*f o f))
-(defmethod g/mul [::co-operator ::operator] [f o] (f*o f o))
+(g/defmethod g/mul [::operator ::operator] [o p] (o:* o p))
+(g/defmethod g/mul [::operator ::co-operator] [o f] (o*f o f))
+(g/defmethod g/mul [::co-operator ::operator] [f o] (f*o f o))
 
-(defmethod g/expt [::operator ::v/native-integral] [o n]
+(g/defmethod g/expt [::operator ::v/native-integral] [o n]
   {:pre [(not (g/negative? n))]}
   (reduce o:* identity (repeat n o)))
 
-(defmethod g/div [::operator ::scalar] [o n] (o-div-n o n))
+(g/defmethod g/div [::operator ::scalar] [o n] (o-div-n o n))
 
-(defmethod g/square [::operator] [o] (o:* o o))
-(defmethod g/cube [::operator] [o] (o:* o (o:* o o)))
+(g/defmethod g/square [::operator] [o] (o:* o o))
+(g/defmethod g/cube [::operator] [o] (o:* o (o:* o o)))
 
-(defmethod g/simplify [::operator] [o] (name o))
+(g/defmethod g/simplify [::operator] [o] (name o))

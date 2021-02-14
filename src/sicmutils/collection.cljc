@@ -114,10 +114,10 @@
                 (map (fn [[k v]] [k (f v)]))
                 m))]
 
-  (defmethod g/simplify [::map] [m]
+  (g/defmethod g/simplify [::map] [m]
     (map-vals g/simplify m))
 
-  (defmethod g/partial-derivative [::map v/seqtype] [m selectors]
+  (g/defmethod g/partial-derivative [::map v/seqtype] [m selectors]
     (map-vals #(g/partial-derivative % selectors)
               m))
 

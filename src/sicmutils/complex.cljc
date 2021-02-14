@@ -60,12 +60,12 @@
   [a]
   (instance? Complex a))
 
-(defmethod g/make-rectangular [::v/real ::v/real] [re im]
+(g/defmethod g/make-rectangular [::v/real ::v/real] [re im]
   (if (v/exact-zero? im)
     re
     (complex re im)))
 
-(defmethod g/make-polar [::v/real ::v/real] [radius angle]
+(g/defmethod g/make-polar [::v/real ::v/real] [radius angle]
   (cond (v/exact-zero? radius) radius
         (v/exact-zero? angle)  radius
         :else
@@ -75,11 +75,11 @@
                   (Complex. (* radius (Math/cos angle))
                             (* radius (Math/sin angle)))))))
 
-(defmethod g/real-part [::complex] [^Complex a] (#?(:clj .getReal :cljs .-re) a))
-(defmethod g/imag-part [::complex] [^Complex a] (#?(:clj .getImaginary :cljs .-im) a))
-(defmethod g/magnitude [::complex] [^Complex a] (.abs a))
-(defmethod g/angle [::complex] [^Complex a] (#?(:clj .getArgument :cljs .arg) a))
-(defmethod g/conjugate [::complex] [^Complex a] (.conjugate a))
+(g/defmethod g/real-part [::complex] [^Complex a] (#?(:clj .getReal :cljs .-re) a))
+(g/defmethod g/imag-part [::complex] [^Complex a] (#?(:clj .getImaginary :cljs .-im) a))
+(g/defmethod g/magnitude [::complex] [^Complex a] (.abs a))
+(g/defmethod g/angle [::complex] [^Complex a] (#?(:clj .getArgument :cljs .arg) a))
+(g/defmethod g/conjugate [::complex] [^Complex a] (.conjugate a))
 
 (def ^{:doc "Parser that converts a string representation of a complex number,
   like `1 + 3i`, into a [[Complex]] number object in clj or cljs."}
@@ -131,79 +131,79 @@
                    (v/exact? (g/imag-part c))))
   (kind [_] ::complex))
 
-(defmethod g/add [::complex ::complex] [^Complex a ^Complex b] (.add a b))
-(defmethod g/add [::complex ::v/real] [^Complex a n] (.add a (u/double n)))
-(defmethod g/add [::v/real ::complex] [n ^Complex a] (.add a (u/double n)))
+(g/defmethod g/add [::complex ::complex] [^Complex a ^Complex b] (.add a b))
+(g/defmethod g/add [::complex ::v/real] [^Complex a n] (.add a (u/double n)))
+(g/defmethod g/add [::v/real ::complex] [n ^Complex a] (.add a (u/double n)))
 
-(defmethod g/expt [::complex ::complex] [^Complex a ^Complex b] (.pow a b))
-(defmethod g/expt [::complex ::v/real] [^Complex a n] (.pow a (u/double n)))
-(defmethod g/expt [::v/real ::complex] [n ^Complex a] (.pow ^Complex (complex n) a))
+(g/defmethod g/expt [::complex ::complex] [^Complex a ^Complex b] (.pow a b))
+(g/defmethod g/expt [::complex ::v/real] [^Complex a n] (.pow a (u/double n)))
+(g/defmethod g/expt [::v/real ::complex] [n ^Complex a] (.pow ^Complex (complex n) a))
 
-(defmethod g/abs [::complex] [^Complex a] (.abs a))
-(defmethod g/exp [::complex] [^Complex a] (.exp a))
-(defmethod g/log [::complex] [^Complex a] (.log a))
-(defmethod g/sqrt [::complex] [^Complex a] (.sqrt a))
+(g/defmethod g/abs [::complex] [^Complex a] (.abs a))
+(g/defmethod g/exp [::complex] [^Complex a] (.exp a))
+(g/defmethod g/log [::complex] [^Complex a] (.log a))
+(g/defmethod g/sqrt [::complex] [^Complex a] (.sqrt a))
 
-(defmethod g/sin [::complex] [^Complex a] (.sin a))
-(defmethod g/cos [::complex] [^Complex a] (.cos a))
-(defmethod g/tan [::complex] [^Complex a] (.tan a))
-(defmethod g/asin [::complex] [^Complex a] (.asin a))
-(defmethod g/acos [::complex] [^Complex a] (.acos a))
-(defmethod g/atan [::complex] [^Complex a] (.atan a))
-(defmethod g/cosh [::complex] [^Complex a] (.cosh a))
-(defmethod g/sinh [::complex] [^Complex a] (.sinh a))
-(defmethod g/tanh [::complex] [^Complex a] (.tanh a))
-(defmethod g/simplify [::complex] [a] (v/freeze a))
+(g/defmethod g/sin [::complex] [^Complex a] (.sin a))
+(g/defmethod g/cos [::complex] [^Complex a] (.cos a))
+(g/defmethod g/tan [::complex] [^Complex a] (.tan a))
+(g/defmethod g/asin [::complex] [^Complex a] (.asin a))
+(g/defmethod g/acos [::complex] [^Complex a] (.acos a))
+(g/defmethod g/atan [::complex] [^Complex a] (.atan a))
+(g/defmethod g/cosh [::complex] [^Complex a] (.cosh a))
+(g/defmethod g/sinh [::complex] [^Complex a] (.sinh a))
+(g/defmethod g/tanh [::complex] [^Complex a] (.tanh a))
+(g/defmethod g/simplify [::complex] [a] (v/freeze a))
 
 #?(:cljs
    ;; These are all defined explicitly in Complex.js.
    (do
-     (defmethod g/cot [::complex] [^Complex a] (.cot a))
-     (defmethod g/sec [::complex] [^Complex a] (.sec a))
-     (defmethod g/csc [::complex] [^Complex a] (.csc a))
-     (defmethod g/tanh [::complex] [^Complex a] (.tanh a))
-     (defmethod g/sech [::complex] [^Complex a] (.sech a))
-     (defmethod g/csch [::complex] [^Complex a] (.csch a))
-     (defmethod g/acosh [::complex] [^Complex a] (.acosh a))
-     (defmethod g/asinh [::complex] [^Complex a] (.asinh a))
-     (defmethod g/atanh [::complex] [^Complex a] (.atanh a))))
+     (g/defmethod g/cot [::complex] [^Complex a] (.cot a))
+     (g/defmethod g/sec [::complex] [^Complex a] (.sec a))
+     (g/defmethod g/csc [::complex] [^Complex a] (.csc a))
+     (g/defmethod g/tanh [::complex] [^Complex a] (.tanh a))
+     (g/defmethod g/sech [::complex] [^Complex a] (.sech a))
+     (g/defmethod g/csch [::complex] [^Complex a] (.csch a))
+     (g/defmethod g/acosh [::complex] [^Complex a] (.acosh a))
+     (g/defmethod g/asinh [::complex] [^Complex a] (.asinh a))
+     (g/defmethod g/atanh [::complex] [^Complex a] (.atanh a))))
 
 ;;The remaining methods have different names in the Clojure vs JS
 ;;implementations.
 #?(:clj
    (do
-     (defmethod g/sub [::complex ::complex] [^Complex a ^Complex b] (.subtract a b))
-     (defmethod g/sub [::complex ::v/real] [^Complex a n] (.subtract a (double n)))
-     (defmethod g/sub [::v/real ::complex] [n ^Complex a] (.add (.negate a) (double n)))
+     (g/defmethod g/sub [::complex ::complex] [^Complex a ^Complex b] (.subtract a b))
+     (g/defmethod g/sub [::complex ::v/real] [^Complex a n] (.subtract a (double n)))
+     (g/defmethod g/sub [::v/real ::complex] [n ^Complex a] (.add (.negate a) (double n)))
 
-     (defmethod g/mul [::complex ::complex] [^Complex a ^Complex b] (.multiply a b))
-     (defmethod g/mul [::complex ::v/real] [^Complex a n] (.multiply a (double n)))
-     (defmethod g/mul [::v/real ::complex] [n ^Complex a] (.multiply a (double n)))
+     (g/defmethod g/mul [::complex ::complex] [^Complex a ^Complex b] (.multiply a b))
+     (g/defmethod g/mul [::complex ::v/real] [^Complex a n] (.multiply a (double n)))
+     (g/defmethod g/mul [::v/real ::complex] [n ^Complex a] (.multiply a (double n)))
 
-     (defmethod g/div [::complex ::complex] [^Complex a ^Complex b] (.divide a b))
-     (defmethod g/div [::complex ::v/real] [^Complex a n] (.divide a (double n)))
-     (defmethod g/div [::v/real ::complex] [n ^Complex a] (.multiply (.reciprocal a) (double n)))
+     (g/defmethod g/div [::complex ::complex] [^Complex a ^Complex b] (.divide a b))
+     (g/defmethod g/div [::complex ::v/real] [^Complex a n] (.divide a (double n)))
+     (g/defmethod g/div [::v/real ::complex] [n ^Complex a] (.multiply (.reciprocal a) (double n)))
 
-     (defmethod g/negate [::complex] [^Complex a] (.negate a))
-     (defmethod g/invert [::complex] [^Complex a] (.reciprocal a))
-     (defmethod g/square [::complex] [^Complex a] (.multiply a a))
-     (defmethod g/cube [::complex] [^Complex a] (.pow a 3.0)))
+     (g/defmethod g/negate [::complex] [^Complex a] (.negate a))
+     (g/defmethod g/invert [::complex] [^Complex a] (.reciprocal a))
+     (g/defmethod g/square [::complex] [^Complex a] (.multiply a a))
+     (g/defmethod g/cube [::complex] [^Complex a] (.pow a 3.0)))
 
    :cljs
    (do
-     (defmethod g/sub [::complex ::complex] [^Complex a ^Complex b] (.sub a b))
-     (defmethod g/sub [::complex ::v/real] [^Complex a n] (.sub a (u/double n)))
-     (defmethod g/sub [::v/real ::complex] [n ^Complex a] (.add (.neg a) (u/double n)))
+     (g/defmethod g/sub [::complex ::complex] [^Complex a ^Complex b] (.sub a b))
+     (g/defmethod g/sub [::complex ::v/real] [^Complex a n] (.sub a (u/double n)))
+     (g/defmethod g/sub [::v/real ::complex] [n ^Complex a] (.add (.neg a) (u/double n)))
 
-     (defmethod g/mul [::complex ::complex] [^Complex a ^Complex b] (.mul a b))
-     (defmethod g/mul [::complex ::v/real] [^Complex a n] (.mul a (u/double n)))
-     (defmethod g/mul [::v/real ::complex] [n ^Complex a] (.mul a (u/double n)))
+     (g/defmethod g/mul [::complex ::complex] [^Complex a ^Complex b] (.mul a b))
+     (g/defmethod g/mul [::complex ::v/real] [^Complex a n] (.mul a (u/double n)))
+     (g/defmethod g/mul [::v/real ::complex] [n ^Complex a] (.mul a (u/double n)))
 
-     (defmethod g/div [::complex ::complex] [^Complex a ^Complex b] (.div a b))
-     (defmethod g/div [::complex ::v/real] [^Complex a n] (.div a (u/double n)))
-     (defmethod g/div [::v/real ::complex] [n ^Complex a] (.mul ^Complex (.inverse a) (u/double n)))
+     (g/defmethod g/div [::complex ::complex] [^Complex a ^Complex b] (.div a b))
+     (g/defmethod g/div [::complex ::v/real] [^Complex a n] (.div a (u/double n)))
+     (g/defmethod g/div [::v/real ::complex] [n ^Complex a] (.mul ^Complex (.inverse a) (u/double n)))
 
-     (defmethod g/negate [::complex] [^Complex a] (.neg a))
-     (defmethod g/invert [::complex] [^Complex a] (.inverse a))
-     (defmethod g/square [::complex] [^Complex a] (.mul a a))
-     (defmethod g/cube [::complex] [^Complex a] (.pow a 3.0))))
+     (g/defmethod g/negate [::complex] [^Complex a] (.neg a))
+     (g/defmethod g/invert [::complex] [^Complex a] (.inverse a))
+     (g/defmethod g/square [::complex] [^Complex a] (.mul a a))
+     (g/defmethod g/cube [::complex] [^Complex a] (.pow a 3.0))))
