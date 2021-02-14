@@ -1183,7 +1183,7 @@
 ;; Any function built out of these components will work with
 ;; the [[sicmutils.calculus.derivative/D]] operator.
 
-(defmethod g/simplify [::differential] [d]
+(g/defmethod g/simplify [::differential] [d]
   (->Differential
    (mapv (fn [term]
            (make-term (tags term)
@@ -1200,7 +1200,7 @@
   installs an appropriate unary implementation of `generic-op` for
   `::differential` instances."
   [generic-op differential-op]
-  (defmethod generic-op [::differential] [a] (differential-op a)))
+  (g/defmethod generic-op [::differential] [a] (differential-op a)))
 
 (defn- defbinary
   "Given:
@@ -1214,7 +1214,7 @@
   (doseq [signature [[::differential ::differential]
                      [::v/scalar ::differential]
                      [::differential ::v/scalar]]]
-    (defmethod generic-op signature [a b] (differential-op a b))))
+    (g/defmethod generic-op signature [a b] (differential-op a b))))
 
 ;; And now we're off to the races. The rest of the namespace
 ;; provides [[defunary]] and [[defbinary]] calls for all of the generic

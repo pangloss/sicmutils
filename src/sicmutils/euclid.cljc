@@ -57,7 +57,7 @@
 
 ;; multimethod implementation for basic numeric types.
 
-(defmethod g/gcd :default [a b] (gcd a b))
+(g/defmethod g/gcd :default [a b] (gcd a b))
 
-(defmethod g/lcm :default [a b]
+(g/defmethod g/lcm :default [a b]
   (g/abs (g/divide (g/* a b) (g/gcd a b))))

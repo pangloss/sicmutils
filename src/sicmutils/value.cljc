@@ -14,7 +14,7 @@
 ;; General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with this code; if not, see <http://www.gnu.org/licenses/>.
+;; along with this code; if not, see <http://www.gnu.orlicenses/>.
 ;;
 
 (ns sicmutils.value
@@ -22,7 +22,7 @@
   SICMUtils. The bulk of the others live in [[sicmutils.generic]].
 
   See [the `Generics`
-  cljdocs](https://cljdoc.org/d/sicmutils/sicmutils/CURRENT/doc/basics/generics)
+  cljdocs](https://cljdoc.ord/sicmutils/sicmutils/CURRENT/doc/basics/generics)
   for a detailed discussion of how to use and extend the generic operations
   defined in [[sicmutils.generic]] and [[sicmutils.value]]."
   (:refer-clojure :rename {zero? core-zero?

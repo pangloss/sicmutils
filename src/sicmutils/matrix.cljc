@@ -831,85 +831,85 @@
 
 ;; ## Generic Operation Installation
 
-(defmethod g/negate [::matrix] [a] (fmap g/negate a))
-(defmethod g/sub [::matrix ::matrix] [a b] (elementwise g/- a b))
-(defmethod g/add [::matrix ::matrix] [a b] (elementwise g/+ a b))
-(defmethod g/mul [::matrix ::matrix] [a b] (mul a b))
-(defmethod g/mul [::v/scalar ::matrix] [n a] (fmap #(g/* n %) a))
-(defmethod g/mul [::matrix ::v/scalar] [a n] (fmap #(g/* % n) a))
-(defmethod g/mul [::matrix ::s/up] [m u] (M*u m u))
-(defmethod g/mul [::s/down ::matrix] [d m] (d*M d m))
-(defmethod g/div [::s/up ::matrix] [u M] (M*u (invert M) u))
-(defmethod g/exp [::square-matrix] [m] (series/exp-series m))
-(defmethod g/cos [::square-matrix] [m] (series/cos-series m))
-(defmethod g/sin [::square-matrix] [m] (series/sin-series m))
-(defmethod g/tan [::square-matrix] [m] (series/tan-series m))
-(defmethod g/sec [::square-matrix] [m] (series/sec-series m))
-(defmethod g/acos [::square-matrix] [m] (series/acos-series m))
-(defmethod g/asin [::square-matrix] [m] (series/asin-series m))
-(defmethod g/atan [::square-matrix] [m] (series/atan-series m))
-(defmethod g/cosh [::square-matrix] [m] (series/cosh-series m))
-(defmethod g/sinh [::square-matrix] [m] (series/sinh-series m))
-(defmethod g/tanh [::square-matrix] [m] (series/tanh-series m))
-(defmethod g/asinh [::square-matrix] [m] (series/asinh-series m))
-(defmethod g/atanh [::square-matrix] [m] (series/atanh-series m))
-(defmethod g/simplify [::matrix] [m] (->> m (fmap g/simplify) v/freeze))
+(g/defmethod g/negate [::matrix] [a] (fmap g/negate a))
+(g/defmethod g/sub [::matrix ::matrix] [a b] (elementwise g/- a b))
+(g/defmethod g/add [::matrix ::matrix] [a b] (elementwise g/+ a b))
+(g/defmethod g/mul [::matrix ::matrix] [a b] (mul a b))
+(g/defmethod g/mul [::v/scalar ::matrix] [n a] (fmap #(g/* n %) a))
+(g/defmethod g/mul [::matrix ::v/scalar] [a n] (fmap #(g/* % n) a))
+(g/defmethod g/mul [::matrix ::s/up] [m u] (M*u m u))
+(g/defmethod g/mul [::s/down ::matrix] [d m] (d*M d m))
+(g/defmethod g/div [::s/up ::matrix] [u M] (M*u (invert M) u))
+(g/defmethod g/exp [::square-matrix] [m] (series/exp-series m))
+(g/defmethod g/cos [::square-matrix] [m] (series/cos-series m))
+(g/defmethod g/sin [::square-matrix] [m] (series/sin-series m))
+(g/defmethod g/tan [::square-matrix] [m] (series/tan-series m))
+(g/defmethod g/sec [::square-matrix] [m] (series/sec-series m))
+(g/defmethod g/acos [::square-matrix] [m] (series/acos-series m))
+(g/defmethod g/asin [::square-matrix] [m] (series/asin-series m))
+(g/defmethod g/atan [::square-matrix] [m] (series/atan-series m))
+(g/defmethod g/cosh [::square-matrix] [m] (series/cosh-series m))
+(g/defmethod g/sinh [::square-matrix] [m] (series/sinh-series m))
+(g/defmethod g/tanh [::square-matrix] [m] (series/tanh-series m))
+(g/defmethod g/asinh [::square-matrix] [m] (series/asinh-series m))
+(g/defmethod g/atanh [::square-matrix] [m] (series/atanh-series m))
+(g/defmethod g/simplify [::matrix] [m] (->> m (fmap g/simplify) v/freeze))
 
-(defmethod g/invert [::matrix] [m] (invert m))
+(g/defmethod g/invert [::matrix] [m] (invert m))
 
-(defmethod g/conjugate [::matrix] [m]
+(g/defmethod g/conjugate [::matrix] [m]
   (fmap g/conjugate m))
 
-(defmethod g/transpose [::matrix] [m] (transpose m))
-(defmethod g/trace [::square-matrix] [m] (trace m))
-(defmethod g/determinant [::square-matrix] [m] (determinant m))
-(defmethod g/determinant [::s/structure] [s]
+(g/defmethod g/transpose [::matrix] [m] (transpose m))
+(g/defmethod g/trace [::square-matrix] [m] (trace m))
+(g/defmethod g/determinant [::square-matrix] [m] (determinant m))
+(g/defmethod g/determinant [::s/structure] [s]
   (square-structure-> s (fn [m _] (determinant m))))
 
-(defmethod g/trace [::s/structure] [s]
+(g/defmethod g/trace [::s/structure] [s]
   (square-structure-> s (fn [m _] (trace m))))
 
-(defmethod g/invert [::s/structure] [a]
+(g/defmethod g/invert [::s/structure] [a]
   (let [a' (square-structure-operation a invert)]
     (if (= (s/orientation a') (s/orientation (first a')))
       (s/opposite a' (map #(s/opposite a' %) a'))
       a')))
 
-(defmethod g/dimension [::square-matrix] [m] (dimension m))
-(defmethod g/dimension [::column-matrix] [m] (num-rows m))
-(defmethod g/dimension [::row-matrix] [m] (num-cols m))
+(g/defmethod g/dimension [::square-matrix] [m] (dimension m))
+(g/defmethod g/dimension [::column-matrix] [m] (num-rows m))
+(g/defmethod g/dimension [::row-matrix] [m] (num-cols m))
 
 ;; ## Column / Row Matrices only...
 
-(defmethod g/dot-product [::row-matrix ::row-matrix] [a b]
+(g/defmethod g/dot-product [::row-matrix ::row-matrix] [a b]
   (g/dot-product (row-matrix->down a)
                  (row-matrix->down b)))
 
-(defmethod g/dot-product [::column-matrix ::column-matrix] [a b]
+(g/defmethod g/dot-product [::column-matrix ::column-matrix] [a b]
   (g/dot-product (column-matrix->up a)
                  (column-matrix->up b)))
 
-(defmethod g/inner-product [::row-matrix ::row-matrix] [a b]
+(g/defmethod g/inner-product [::row-matrix ::row-matrix] [a b]
   (g/inner-product (row-matrix->vector a)
                    (row-matrix->vector b)))
 
-(defmethod g/inner-product [::column-matrix ::column-matrix] [a b]
+(g/defmethod g/inner-product [::column-matrix ::column-matrix] [a b]
   (g/inner-product (column-matrix->up a)
                    (column-matrix->up b)))
 
-(defmethod g/cross-product [::row-matrix ::row-matrix] [a b]
+(g/defmethod g/cross-product [::row-matrix ::row-matrix] [a b]
   (by-rows
    (s/structure->vector
     (g/cross-product (row-matrix->vector a)
                      (row-matrix->vector b)))))
 
-(defmethod g/cross-product [::column-matrix ::column-matrix] [a b]
+(g/defmethod g/cross-product [::column-matrix ::column-matrix] [a b]
   (up->column-matrix
    (g/cross-product (column-matrix->up a)
                     (column-matrix->up b))))
 
-(defmethod g/outer-product [::column-matrix ::row-matrix] [a b] (mul a b))
+(g/defmethod g/outer-product [::column-matrix ::row-matrix] [a b] (mul a b))
 
-(defmethod g/partial-derivative [::matrix v/seqtype] [M selectors]
+(g/defmethod g/partial-derivative [::matrix v/seqtype] [M selectors]
   (fmap #(g/partial-derivative % selectors)
         M))

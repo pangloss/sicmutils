@@ -340,5 +340,5 @@
 ;; We can install one more method - [[sicmutils.generic/simplify]] simplifies
 ;; the attached name, but does not return its own function.
 
-(defmethod g/simplify [Function] [a]
+(g/defmethod g/simplify [Function] [a]
   (g/simplify (name a)))

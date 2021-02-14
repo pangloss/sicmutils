@@ -628,63 +628,63 @@
 
 (doseq [[ctor kind] [[->Series ::series]
                      [->PowerSeries ::power-series]]]
-  (defmethod g/add [kind kind] [s t]
+  (g/defmethod g/add [kind kind] [s t]
     (ctor (i/seq:+ (seq s) (seq t))))
 
-  (defmethod g/add [::coseries kind] [c s]
+  (g/defmethod g/add [::coseries kind] [c s]
     (ctor (i/c+seq c (seq s))))
 
-  (defmethod g/add [kind ::coseries] [s c]
+  (g/defmethod g/add [kind ::coseries] [s c]
     (ctor (i/seq+c (seq s) c)))
 
-  (defmethod g/negate [kind] [s]
+  (g/defmethod g/negate [kind] [s]
     (ctor (i/negate (seq s))))
 
-  (defmethod g/sub [kind kind] [s t]
+  (g/defmethod g/sub [kind kind] [s t]
     (ctor (i/seq:- (seq s) (seq t))))
 
-  (defmethod g/sub [::coseries kind] [c s]
+  (g/defmethod g/sub [::coseries kind] [c s]
     (ctor (i/c-seq c (seq s))))
 
-  (defmethod g/sub [kind ::coseries] [s c]
+  (g/defmethod g/sub [kind ::coseries] [s c]
     (ctor (i/seq-c (seq s) c)))
 
-  (defmethod g/mul [kind kind] [s t]
+  (g/defmethod g/mul [kind kind] [s t]
     (ctor (i/seq:* (seq s) (seq t))))
 
-  (defmethod g/mul [::coseries kind] [c s]
+  (g/defmethod g/mul [::coseries kind] [c s]
     (ctor (i/c*seq c (seq s))))
 
-  (defmethod g/mul [kind ::coseries] [s c]
+  (g/defmethod g/mul [kind ::coseries] [s c]
     (ctor (i/seq*c (seq s) c)))
 
-  (defmethod g/square [kind] [s]
+  (g/defmethod g/square [kind] [s]
     (let [xs (seq s)]
       (ctor (i/seq:* xs xs))))
 
-  (defmethod g/cube [kind] [s]
+  (g/defmethod g/cube [kind] [s]
     (let [xs (seq s)]
       (ctor (i/seq:* (i/seq:* xs xs) xs))))
 
-  (defmethod g/expt [kind ::v/native-integral] [s e]
+  (g/defmethod g/expt [kind ::v/native-integral] [s e]
     (ctor (i/expt (seq s) e)))
 
-  (defmethod g/invert [kind] [s]
+  (g/defmethod g/invert [kind] [s]
     (ctor (i/invert (seq s))))
 
-  (defmethod g/div [::coseries kind] [c s]
+  (g/defmethod g/div [::coseries kind] [c s]
     (ctor (i/c-div-seq c (seq s))))
 
-  (defmethod g/div [kind ::coseries] [s c]
+  (g/defmethod g/div [kind ::coseries] [s c]
     (ctor (i/seq-div-c (seq s) c)))
 
-  (defmethod g/div [kind kind] [s t]
+  (g/defmethod g/div [kind kind] [s t]
     (ctor (i/div (seq s) (seq t))))
 
-  (defmethod g/sqrt [kind] [s]
+  (g/defmethod g/sqrt [kind] [s]
     (ctor (i/sqrt (seq s))))
 
-  (defmethod g/simplify [kind] [s]
+  (g/defmethod g/simplify [kind] [s]
     (map g/simplify (seq s))))
 
 
@@ -698,43 +698,43 @@
 ;; If `s` is a `PowerSeries` that applies as `(s x)`, `(g/exp s)` returns a
 ;; series that represents `(g/exp (s x))`.
 
-(defmethod g/exp [::power-series] [s]
+(g/defmethod g/exp [::power-series] [s]
   (->PowerSeries (i/compose i/expx (seq s))))
 
-(defmethod g/cos [::power-series] [s]
+(g/defmethod g/cos [::power-series] [s]
   (->PowerSeries (i/compose i/cosx (seq s))))
 
-(defmethod g/sin [::power-series] [s]
+(g/defmethod g/sin [::power-series] [s]
   (->PowerSeries (i/compose i/sinx (seq s))))
 
-(defmethod g/tan [::power-series] [s]
+(g/defmethod g/tan [::power-series] [s]
   (->PowerSeries (i/compose i/tanx (seq s))))
 
-(defmethod g/sec [::power-series] [s]
+(g/defmethod g/sec [::power-series] [s]
   (->PowerSeries (i/compose i/secx (seq s))))
 
-(defmethod g/asin [::power-series] [s]
+(g/defmethod g/asin [::power-series] [s]
   (->PowerSeries (i/compose i/asinx (seq s))))
 
-(defmethod g/acos [::power-series] [s]
+(g/defmethod g/acos [::power-series] [s]
   (->PowerSeries (i/compose i/acosx (seq s))))
 
-(defmethod g/atan [::power-series] [s]
+(g/defmethod g/atan [::power-series] [s]
   (->PowerSeries (i/compose i/atanx (seq s))))
 
-(defmethod g/cosh [::power-series] [s]
+(g/defmethod g/cosh [::power-series] [s]
   (->PowerSeries (i/compose i/coshx (seq s))))
 
-(defmethod g/sinh [::power-series] [s]
+(g/defmethod g/sinh [::power-series] [s]
   (->PowerSeries (i/compose i/sinhx (seq s))))
 
-(defmethod g/tanh [::power-series] [s]
+(g/defmethod g/tanh [::power-series] [s]
   (->PowerSeries (i/compose i/tanhx (seq s))))
 
-(defmethod g/asinh [::power-series] [s]
+(g/defmethod g/asinh [::power-series] [s]
   (->PowerSeries (i/compose i/asinhx (seq s))))
 
-(defmethod g/atanh [::power-series] [s]
+(g/defmethod g/atanh [::power-series] [s]
   (->PowerSeries (i/compose i/atanhx (seq s))))
 
 ;; ## Derivatives
@@ -742,7 +742,7 @@
 ;; For a `Series`, the derivative operation assumes that the series contains
 ;; applicables that can take their own partial derivatives.
 
-(defmethod g/partial-derivative [::series v/seqtype] [^Series s selectors]
+(g/defmethod g/partial-derivative [::series v/seqtype] [^Series s selectors]
   (->Series (map #(g/partial-derivative % selectors)
                  (.-xs s))))
 
@@ -750,7 +750,7 @@
 ;; `g/partial-derivative` simply takes the series derivative of the contained
 ;; sequence.
 
-(defmethod g/partial-derivative [::power-series v/seqtype] [^PowerSeries s selectors]
+(g/defmethod g/partial-derivative [::power-series v/seqtype] [^PowerSeries s selectors]
   (if (empty? selectors)
     (->PowerSeries (i/deriv (.-xs s)))
     (u/illegal

@@ -823,38 +823,38 @@
     (->Structure (orientation s) (mapv op s t))
     (u/arithmetic-ex (str op " provided arguments of differing length"))))
 
-(defmethod g/add [::down ::down] [a b] (elementwise g/+ a b))
-(defmethod g/add [::up ::up] [a b] (elementwise g/+ a b))
+(g/defmethod g/add [::down ::down] [a b] (elementwise g/+ a b))
+(g/defmethod g/add [::up ::up] [a b] (elementwise g/+ a b))
 
-(defmethod g/negate [::structure] [a] (mapr g/negate a))
-(defmethod g/sub [::down ::down] [a b] (elementwise g/- a b))
-(defmethod g/sub [::up ::up] [a b] (elementwise g/- a b))
+(g/defmethod g/negate [::structure] [a] (mapr g/negate a))
+(g/defmethod g/sub [::down ::down] [a b] (elementwise g/- a b))
+(g/defmethod g/sub [::up ::up] [a b] (elementwise g/- a b))
 
-(defmethod g/mul [::structure ::structure] [a b] (s:* a b))
-(defmethod g/mul [::structure ::v/scalar] [a b] (structure*scalar a b))
-(defmethod g/mul [::v/scalar ::structure] [a b] (scalar*structure a b))
+(g/defmethod g/mul [::structure ::structure] [a b] (s:* a b))
+(g/defmethod g/mul [::structure ::v/scalar] [a b] (structure*scalar a b))
+(g/defmethod g/mul [::v/scalar ::structure] [a b] (scalar*structure a b))
 
-(defmethod g/div [::structure ::v/scalar] [a b] (structure*scalar a (g/invert b)))
-(defmethod g/div [::structure ::structure] [a b] (s:* (g/invert b) a))
+(g/defmethod g/div [::structure ::v/scalar] [a b] (structure*scalar a (g/invert b)))
+(g/defmethod g/div [::structure ::structure] [a b] (s:* (g/invert b) a))
 
-(defmethod g/square [::structure] [a] (dot-product a a))
-(defmethod g/cube [::structure] [a] (s:* a (s:* a a)))
-(defmethod g/expt [::structure ::v/integral] [a b] (expt a b))
-(defmethod g/simplify [::structure] [a]
+(g/defmethod g/square [::structure] [a] (dot-product a a))
+(g/defmethod g/cube [::structure] [a] (s:* a (s:* a a)))
+(g/defmethod g/expt [::structure ::v/integral] [a b] (expt a b))
+(g/defmethod g/simplify [::structure] [a]
   (v/freeze (mapr g/simplify a)))
 
-(defmethod g/magnitude [::structure] [a]
+(g/defmethod g/magnitude [::structure] [a]
   (g/sqrt (inner-product a a)))
 
-(defmethod g/abs [::structure] [a]
+(g/defmethod g/abs [::structure] [a]
   (g/sqrt (dot-product a a)))
 
-(defmethod g/conjugate [::structure] [a]
+(g/defmethod g/conjugate [::structure] [a]
   (mapr g/conjugate a))
 
-(defmethod g/transpose [::structure] [a] (transpose a))
-(defmethod g/dimension [::structure] [a] (dimension a))
-(defmethod g/dot-product [::structure ::structure] [a b] (dot-product a b))
-(defmethod g/inner-product [::structure ::structure] [a b] (inner-product a b))
-(defmethod g/outer-product [::structure ::structure] [a b] (outer-product a b))
-(defmethod g/cross-product [::up ::up] [a b] (cross-product a b))
+(g/defmethod g/transpose [::structure] [a] (transpose a))
+(g/defmethod g/dimension [::structure] [a] (dimension a))
+(g/defmethod g/dot-product [::structure ::structure] [a b] (dot-product a b))
+(g/defmethod g/inner-product [::structure ::structure] [a b] (inner-product a b))
+(g/defmethod g/outer-product [::structure ::structure] [a b] (outer-product a b))
+(g/defmethod g/cross-product [::up ::up] [a b] (cross-product a b))

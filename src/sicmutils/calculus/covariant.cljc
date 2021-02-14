@@ -50,7 +50,7 @@
            :else (u/unsupported "Can't take the Lie derivative of that yet")))
    `(~'Lie-derivative ~(m/diffop-name X))))
 
-(defmethod g/Lie-derivative [::vf/vector-field] [V] (vector-field-Lie-derivative V))
+(g/defmethod g/Lie-derivative [::vf/vector-field] [V] (vector-field-Lie-derivative V))
 
 (defn interior-product
   [V]

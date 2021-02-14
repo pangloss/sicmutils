@@ -141,9 +141,9 @@
 
 (defn- defunary [generic-op op-sym]
   (if-let [op (sym/symbolic-operator op-sym)]
-    (defmethod generic-op [::x/numeric] [a]
+    (g/defmethod generic-op [::x/numeric] [a]
       (literal-number (op (numerical-expression a))))
-    (defmethod generic-op [::x/numeric] [a]
+    (g/defmethod generic-op [::x/numeric] [a]
       (x/literal-apply ::x/numeric op-sym [a]))))
 
 (defn- defbinary [generic-op op-sym]
@@ -152,13 +152,13 @@
                [::x/numeric ::v/number]]]
     (if-let [op (sym/symbolic-operator op-sym)]
       (doseq [[l r] pairs]
-        (defmethod generic-op [l r] [a b]
+        (g/defmethod generic-op [l r] [a b]
           (literal-number
            (op (numerical-expression a)
                (numerical-expression b)))))
 
       (doseq [[l r] pairs]
-        (defmethod generic-op [l r] [a b]
+        (g/defmethod generic-op [l r] [a b]
           (x/literal-apply ::x/numeric op-sym [a b]))))))
 
 (defbinary g/add '+)
@@ -197,5 +197,5 @@
 (defunary g/conjugate 'conjugate)
 
 (defbinary g/gcd 'gcd)
-(defmethod g/simplify [::x/numeric] [a]
+(g/defmethod g/simplify [::x/numeric] [a]
   (s/simplify-expression (v/freeze a)))

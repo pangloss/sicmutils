@@ -223,7 +223,7 @@
    #(Poisson-bracket % H)
    `(~'Lie-derivative ~H)))
 
-(defmethod g/Lie-derivative [::v/function] [f] (Hamiltonian-Lie-derivative f))
+(g/defmethod g/Lie-derivative [::v/function] [f] (Hamiltonian-Lie-derivative f))
 
 (defn Lie-transform
   "p. 428"

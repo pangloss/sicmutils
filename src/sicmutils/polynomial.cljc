@@ -521,37 +521,37 @@
 
 ;; ## Generic Implementations
 
-(defmethod g/add [::polynomial ::polynomial] [a b] (add a b))
-(defmethod g/mul [::polynomial ::polynomial] [a b] (mul a b))
-(defmethod g/sub [::polynomial ::polynomial] [a b] (sub a b))
-(defmethod g/exact-divide [::polynomial ::polynomial] [p q] (evenly-divide p q))
-(defmethod g/square [::polynomial] [a] (mul a a))
-(defmethod g/abs [::polynomial] [a] (abs a))
+(g/defmethod g/add [::polynomial ::polynomial] [a b] (add a b))
+(g/defmethod g/mul [::polynomial ::polynomial] [a b] (mul a b))
+(g/defmethod g/sub [::polynomial ::polynomial] [a b] (sub a b))
+(g/defmethod g/exact-divide [::polynomial ::polynomial] [p q] (evenly-divide p q))
+(g/defmethod g/square [::polynomial] [a] (mul a a))
+(g/defmethod g/abs [::polynomial] [a] (abs a))
 
-(defmethod g/mul [::v/number ::polynomial] [c p]
+(g/defmethod g/mul [::v/number ::polynomial] [c p]
   (map-coefficients #(g/* c %) p))
 
-(defmethod g/mul [::polynomial ::v/number] [p c]
+(g/defmethod g/mul [::polynomial ::v/number] [p c]
   (map-coefficients #(g/* % c) p))
 
-(defmethod g/add [::v/number ::polynomial] [c p]
+(g/defmethod g/add [::v/number ::polynomial] [c p]
   (add (make-constant (.-arity p) c) p))
 
-(defmethod g/add [::polynomial ::v/number] [p c]
+(g/defmethod g/add [::polynomial ::v/number] [p c]
   (add p (make-constant (.-arity p) c)))
 
-(defmethod g/sub [::v/number ::polynomial] [c p]
+(g/defmethod g/sub [::v/number ::polynomial] [c p]
   (sub (make-constant (.-arity p) c) p))
 
-(defmethod g/sub [::polynomial ::v/number] [p c]
+(g/defmethod g/sub [::polynomial ::v/number] [p c]
   (sub p (make-constant (.-arity p) c)))
 
-(defmethod g/div [::polynomial ::v/number] [p c]
+(g/defmethod g/div [::polynomial ::v/number] [p c]
   (map-coefficients #(g/divide % c) p))
 
-(defmethod g/div [::v/integral ::polynomial] [c p]
+(g/defmethod g/div [::v/integral ::polynomial] [c p]
   (make (make-constant (.-arity p) c) p))
 
-(defmethod g/expt [::polynomial ::v/native-integral] [b x] (expt b x))
+(g/defmethod g/expt [::polynomial ::v/native-integral] [b x] (expt b x))
 
-(defmethod g/negate [::polynomial] [a] (negate a))
+(g/defmethod g/negate [::polynomial] [a] (negate a))

@@ -14,7 +14,7 @@
 ;; General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with this code; if not, see <http://www.gnu.org/licenses/>.
+;; along with this code; if not, see <http://www.gnu.orlicenses/>.
 ;;
 
 (ns sicmutils.generic
@@ -22,10 +22,11 @@
   the others live in [[sicmutils.value]].
 
   See [the `Generics`
-  cljdocs](https://cljdoc.org/d/sicmutils/sicmutils/CURRENT/doc/basics/generics)
+  cljdocs](https://cljdoc.ord/sicmutils/sicmutils/CURRENT/doc/basics/generics)
   for a detailed discussion of how to use and extend the generic operations
   defined in [[sicmutils.generic]] and [[sicmutils.value]]."
-  (:refer-clojure :rename {mod core-mod}
+  (:refer-clojure :rename {mod core-mod
+                           defmethod core-defmethod}
                   :exclude [/ + - * divide #?(:cljs mod)])
   (:require [sicmutils.value :as v]
             [sicmutils.util :as u])
@@ -57,6 +58,11 @@
                   [a])]
     (map #(into [] (take %) lowercase-symbols)
          arities)))
+
+(defn method-dispatched [multimethod & args]
+  (get (clojure.set/map-invert (.getMethodTable multimethod))
+       (.getMethod multimethod
+                   (apply (.dispatchFn multimethod) args))))
 
 (defmacro ^:private defgeneric
   "Defines a multifn using the provided symbol. Arranges for the multifn
@@ -97,8 +103,39 @@
          ~docstring
          {:arglists '~(arglists a b)}
          v/argument-kind ~@options)
-       (defmethod ~f [~kwd-klass] [k#]
-         (~attr k#)))))
+       (defn ~(symbol (str (name f) "-selected")) [& args#]
+         (apply method-dispatched ~f args#))
+       (core-defmethod ~f [~kwd-klass] [k#]
+                       (if (= :specifics k#)
+                         (keys (.getMethodTable ~f))
+                         (~attr k#))))))
+
+(def ^:dynamic *debug-generics* (= (System/getProperty "sicmutils.debug_generics") "true"))
+(def generic-call-id (atom 0))
+(def ^:dynamic *generic-call-chain* [])
+(def ^:dynamic *generic-call-tap?* (constantly false))
+
+(defmacro defmethod [multifn dispatch-val & fn-tail]
+  (if *debug-generics*
+    `(let [call-info# {:dispatch ~dispatch-val :name (if (method-dispatched ~multifn :name)
+                                                       (~multifn :name)
+                                                       '~multifn)}]
+       (core-defmethod ~multifn ~dispatch-val ~@(butlast fn-tail)
+          (let [call-id# (swap! generic-call-id inc)
+                call-info# (assoc call-info# :id call-id# :parent-id (:id (last *generic-call-chain*)))
+                tap?# (*generic-call-tap?* call-info#)]
+            (when tap?#
+              (tap> (assoc (try (assoc call-info# :call ~(second fn-tail))
+                                ;; If the function destructures I'm not going to try to figure that out.
+                                (catch Exception e# call-info#))
+                           :chain *generic-call-chain*)))
+            (let [result#
+                  (binding [*generic-call-chain* (conj *generic-call-chain* call-info#)]
+                    ~(last fn-tail))]
+              (when tap?#
+                (tap> (assoc call-info# :result result#)))
+              result#))))
+    `(core-defmethod ~multifn ~dispatch-val ~@fn-tail)))
 
 ;; Numeric functions.
 (defgeneric add 2
@@ -124,6 +161,7 @@ See [[+]] for a variadic version of [[add]]."
 (defgeneric sub 2
   "Returns the difference of `a` and `b`. Equivalent to `([[add]] a ([[negate]]
   b))`.
+
 
 See [[-]] for a variadic version of [[sub]]."
   {:name '-
@@ -206,7 +244,7 @@ See [[*]] for a variadic version of [[mul]]."
         (cond (pos? e)  (expt' s e)
               (zero? e) (v/one-like e)
               :else (invert (expt' s (negate e)))))
-      (u/illegal (str "No g/mul implementation registered for kind " kind)))))
+      (u/illegal (str "No mul implementation registered for kind " kind)))))
 
 (defgeneric exp 1
   "Returns the base-e exponential of `x`. Equivalent to `(expt e x)`, given
@@ -241,12 +279,12 @@ See [[*]] for a variadic version of [[mul]]."
 
 (defgeneric gcd 2
   "Returns the [greatest common
-  divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the two
+  divisor](https://en.wikipedia.orwiki/Greatest_common_divisor) of the two
   inputs `a` and `b`.")
 
 (defgeneric lcm 2
   "Returns the [least common
-  multiple](https://en.wikipedia.org/wiki/Least_common_multiple) of the two
+  multiple](https://en.wikipedia.orwiki/Least_common_multiple) of the two
   inputs `a` and `b`.")
 
 (defgeneric exact-divide 2)
